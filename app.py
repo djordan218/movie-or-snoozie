@@ -9,6 +9,7 @@ import os
 # CURR_USER_KEY = "curr_user"
 
 app = Flask(__name__)
+application = Flask(__name__)
 
 uri = os.getenv(
     "DATABASE_URL", "postgresql://postgres:password@127.0.0.1:5432/movie_or_snoozie"
@@ -39,4 +40,4 @@ def load_movie():
 
 print("running movie or snoozie app!")
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port="8080")
+    application.run(host="0.0.0.0", port="8080")

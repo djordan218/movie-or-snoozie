@@ -35,3 +35,6 @@ def load_movie():
     res = requests.get(API_URL, params={"apikey": API_KEY, "s": search_term})
     movies = res.json()
     return render_template("index.html", form=form, movies=movies)
+
+
+print("running movie or snoozie app!")

@@ -1,0 +1,123 @@
+{% extends 'base.html' %} {% block content %}
+
+<div class="container">
+  <section class="container title-div">
+    <div id="raffle-red" class="entry raffle">
+      <div class="no-scale"></div>
+    </div>
+    <p class="movie-title text-center or">or</p>
+    <h2 class="snoozie">Snoozie</h2>
+
+    
+
+  </section>
+  
+  <section>
+  <h6 class="display-7 text-center">Find a movie or show that you want to watch? Have rating standards you want to stick to while also making sure you don't stay up too late? I got you.</h6>
+  <h6 class="text-center">
+    We make sure the movie doesn't go past your bedtime and show you the IMDB &
+    RottenTomatoes rating. If the ratings don't match your standards, then we'll
+    let ya know!</h6></section> 
+    
+<section id="user-prefs" class="container">
+  <div class="row">
+    <h2 class="text-center">Set your standards & bedtime!</h2>
+      <div class="text-center col">
+        <img class="icon-2" src="/static/images/imdb.png">
+        <p class="rating-p">Your IMDB rating:</p>
+          <Input id="imdbRange" class="range" type="range" min="0" max="10" step="0.1" onChange="imdbSlide(this.value)" onmousemove="imdbSlide(this.value)"></Input>
+          <span class="rangeValue" id="imdbRating">0</span>
+      </div>
+      <div class="text-center col">
+        <img class="icon-2" src="/static/images/rt.png">
+        <p class="rating-p">Your Rotten Tomato rating:</p>
+          <Input id="rtRange" class="range rtRange" value="75" type="range" min="0" max="100" step="1" onChange="rtSlide(this.value)" onmousemove="rtSlide(this.value)"></Input>
+          <span class="rangeValue" id="rtRating">0</span>
+      </div>
+      <div class="text-center col">
+        <img class="icon-2" src="/static/images/metacritic.png">
+        <p class="rating-p">Your metacritic rating:</p>
+        <Input id="metacriticRange" class="range metacriticRange" type="range" min="0" max="100" step="1" onChange="metacriticSlide(this.value)" onmousemove="metacriticSlide(this.value)"></Input>
+        <span class="rangeValue" id="metacriticRating">0</span>
+    </div>
+    <div class="row">
+      <div class="text-center col bedtime-div">
+        <i class="fa-solid fa-bed fa-2xl"></i>
+        <p>Your current bedtime:</p>
+        <div class="update-form">
+            <input id="timepicker" type="text" class="timepicker" name="time"/>
+            <button class="btn btn-outline-secondary btn-sm update" type="button" onclick="bedtimeChange(timepicker.value)"/>Update!</button>
+        </div>
+        <div class="rangeValue" id="user-bedtime">Pick a bedtime.</div>
+      </div>
+      </div>
+  </div>
+  </section>
+  <div class="text-center updateBtn">
+    <button
+    id="updatePrefBtn"
+    class="btn btn-outline-secondary btn-sm"
+    onclick="updateLocalStorage()"
+  >
+    Update my preferences!
+  </button>
+</div>
+</div>
+<form id="searchForm" action="/movie_search" onsubmit="scrollToMovies()" method="POST" class="main-search">
+  {{ form.hidden_tag() }} {% for field in form if field.widget.input_type !=
+  'hidden' %}
+  <p id="movieSearch" class="form">
+    {{ field.label }} {{ field(class_="form-control") }} {% for error in
+    field.errors %} <span class="form-text text-danger">{{ error }}</span>
+    {% endfor %}
+  </p>
+
+  {% endfor %}
+  <div class="d-grid gap-2 col-6 mx-auto">
+    <button
+      id="searchBtn"
+      class="btn btn-outline-secondary btn-lg"
+      type="submit"
+    >
+      Search!
+    </button>
+  </div>
+</form>
+
+<div id="moviePopulate" class="d-flex justify-content-center"></div>
+
+{% if movies %}
+<div class="container movies">
+  <div class="row row-cls-5 d-flex justify-content-center">
+    {% for movie in movies['Search'] %} {% if movie['Type'] == 'movie' %}
+
+    <div class="card text-bg-secondary mb-3" style="width: 18rem; height: auto">
+      {% if movie['Poster'] == "N/A" %}
+      <img
+        src="/static/images/no-poster.jpg"
+        class="card-img-top img-thumbnail"
+      />
+      {% else %}
+      <img src="{{ movie['Poster'] }}" class="card-img-top img-fluid" />
+      {% endif %}
+      <div class="card-body text-center">
+        <h6 class="card-title text-center">
+          <span class="card-movie-title">{{ movie['Title']}}</span>
+          <p>{{movie['Year']}}</p>
+        </h6>
+      </div>
+      <div class="card-body card-body-btn align-bottom">
+        <button
+          type="button"
+          id="{{movie['imdbID'] }}"
+          onclick="get_movie(this.id)"
+          class="btn btn-success text-center movieBtn"
+        >
+          This is the one!
+        </button>
+      </div>
+    </div>
+    {% endif %} {% endfor %}
+  </div>
+</div>
+{% endif %} {% endblock %}

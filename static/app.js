@@ -2,10 +2,6 @@ document.addEventListener('DOMContentLoaded', function () {
   getLocalStorage();
 });
 
-function scrollToMovies() {
-  console.log('hello');
-}
-
 function getLocalStorage() {
   const userPrefs = JSON.parse(localStorage.getItem('movieOrSnooziePrefs'));
   document.getElementById('user-bedtime').innerHTML = userPrefs.userBedtime;
@@ -77,7 +73,7 @@ async function decide(clicked_id) {
   const userBedtime = userPrefs.userBedtime;
   const userImdb = +userPrefs.imdb.split(' ')[0];
   const userRt = +userPrefs.rt.split('%')[0];
-  const userMetacritic = +userPrefs.metacritic;
+  const userMetacritic = +userPrefs.metacritic.split('/')[0];
   $('.bedtime-div').append(`The current time is: ${currentTime}.`);
 
   const res = await axios.get(
@@ -93,7 +89,7 @@ async function decide(clicked_id) {
 
   const splitImdbRating = imdbRating.split('/')[0];
   const splitRtRating = rtRating.split('%')[0];
-  const splitMetacriticRating = metacriticRating.split('%')[0];
+  const splitMetacriticRating = metacriticRating.split('/')[0];
   const slicedRuntime = movieRuntime.split(' min')[0];
 
   const data = {
@@ -141,15 +137,15 @@ async function decide(clicked_id) {
 
   if (splitMetacriticRating >= userMetacritic) {
     $('#metacriticRating').append(
-      `<div class="alert alert-success alert-dismissible fade show decide-alert" role="alert"><b>${splitMetacriticRating}%</b> on Metacritic. Hot dog, go throw on the sweatpants!<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>`
+      `<div class="alert alert-success alert-dismissible fade show decide-alert" role="alert"><b>${splitMetacriticRating}/100</b> on Metacritic. Hot dog, go throw on the sweatpants!<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>`
     );
-  } else if (metacriticRating === 'no ratings') {
+  } else if (splitMetacriticRating === 'no ratings') {
     $('#metacriticRating').append(
       `<div class="alert alert-warning alert-dismissible fade show decide-alert" role="alert">There is no Metacritic rating for this movie... Roll the dice?<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>`
     );
   } else {
     $('#metacriticRating').append(
-      `<div class="alert alert-danger alert-dismissible fade show decide-alert" role="alert"><b>${splitMetacriticRating}%</b> on Metacritic. Could be a nothing burger.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>`
+      `<div class="alert alert-danger alert-dismissible fade show decide-alert" role="alert"><b>${splitMetacriticRating}/100</b> on Metacritic. Could be a nothing burger.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>`
     );
   }
 
@@ -214,7 +210,7 @@ function rtSlide(value) {
   document.getElementById('rtRating').innerHTML = value + '%';
 }
 function metacriticSlide(value) {
-  document.getElementById('metacriticRating').innerHTML = value + '%';
+  document.getElementById('metacriticRating').innerHTML = value + '/100';
 }
 function bedtimeChange(value) {
   document.getElementById('user-bedtime').innerHTML = value;
